@@ -1,51 +1,66 @@
-# Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022)
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import streamlit as st
-from streamlit.logger import get_logger
+import numpy as np
+import time
 
-LOGGER = get_logger(__name__)
+# Function to update the board for the next generation
+def update_board(board):
+    new_board = board.copy()
+    for i in range(board.shape[0]):
+        for j in range(board.shape[1]):
+            live_neighbors = np.sum(board[max(i-1, 0):min(i+2, board.shape[0]), max(j-1, 0):min(j+2, board.shape[1])]) - board[i, j]
+            if board[i, j] == 1 and (live_neighbors < 2 or live_neighbors > 3):
+                new_board[i, j] = 0
+            elif board[i, j] == 0 and live_neighbors == 3:
+                new_board[i, j] = 1
+    return new_board
 
+# Function to draw the board on Streamlit
+def draw_board(board):
+    board_display = ""
+    for i in range(board.shape[0]):
+        for j in range(board.shape[1]):
+            if board[i, j] == 1:
+                board_display += '⬛'
+            else:
+                board_display += '⬜'
+        board_display += '\n'
+    return board_display
 
-def run():
-    st.set_page_config(
-        page_title="Hello",
-        page_icon="👋",
-    )
+def main():
+    st.title("hey! welcome to the unexpected at mba.ai")
+    st.markdown("Dive into a world where each learning step opens doors to new, unforeseen possibilities. Here, your growth isn't just step by step – it's leaps and bounds. Stick around, and let's see where this journey takes us! .")
 
-    st.write("# Welcome to Streamlit! 👋")
+    # Sidebar for configuration
+    st.sidebar.title("Configuration")
+    board_size = st.sidebar.slider("Board Size", 5, 30, 10)
+    speed = st.sidebar.slider("Speed (iterations per second)", 1, 20, 5)
+    if 'board' not in st.session_state or st.sidebar.button('Reset Board'):
+        st.session_state.board = np.random.randint(2, size=(board_size, board_size))
 
-    st.sidebar.success("Select a demo above.")
+    # Placeholder for the board
+    board_placeholder = st.empty()
 
-    st.markdown(
-        """
-        Streamlit is an open-source app framework built specifically for
-        Machine Learning and Data Science projects.
-        **👈 Select a demo from the sidebar** to see some examples
-        of what Streamlit can do!
-        ### Want to learn more?
-        - Check out [streamlit.io](https://streamlit.io)
-        - Jump into our [documentation](https://docs.streamlit.io)
-        - Ask a question in our [community
-          forums](https://discuss.streamlit.io)
-        ### See more complex demos
-        - Use a neural net to [analyze the Udacity Self-driving Car Image
-          Dataset](https://github.com/streamlit/demo-self-driving)
-        - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
-    """
-    )
+    # Start and stop buttons
+    if st.sidebar.button('Start / Resume'):
+        st.session_state.running = True
+    if st.sidebar.button('Pause'):
+        st.session_state.running = False
 
+    # Main loop
+    while st.session_state.get('running', False):
+        start_time = time.time()
+        board_placeholder.markdown(draw_board(st.session_state.board), unsafe_allow_html=True)
+        st.session_state.board = update_board(st.session_state.board)
+        st.sidebar.text("Running...")
+        # Control the speed of updates
+        elapsed_time = time.time() - start_time
+        time.sleep(max(0, 1.0/speed - elapsed_time))
+        st.experimental_rerun()
+
+    # Display the board when not running
+    if not st.session_state.get('running', False):
+        board_placeholder.markdown(draw_board(st.session_state.board), unsafe_allow_html=True)
+        st.sidebar.text("Paused")
 
 if __name__ == "__main__":
-    run()
+    main()

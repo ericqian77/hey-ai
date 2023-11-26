@@ -1,7 +1,3 @@
-# Welcome to streamlit
+# hey! welcome to  mba.ai
 
-This is the app you get when you run `streamlit hello`, extracted as its own app.
-
-Edit [Hello.py](./Hello.py) to customize this app to your heart's desire. ❤️
-
-Check it out on [Streamlit Community Cloud](https://st-hello-app.streamlit.app/)
+Dive into a world where each learning step opens doors to new, unforeseen possibilities. Here, your growth isn't just step by step – it's leaps and bounds. Stick around, and let's see where this journey takes us! .
