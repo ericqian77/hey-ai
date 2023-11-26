@@ -32,7 +32,7 @@ def main():
 
     # Sidebar for configuration
     st.sidebar.title("Configuration")
-    board_size = st.sidebar.slider("Board Size", 5, 30, 10)
+    board_size = st.sidebar.slider("Board Size", 5, 30, 20)
     speed = st.sidebar.slider("Speed (iterations per second)", 1, 20, 5)
     if 'board' not in st.session_state or st.sidebar.button('Reset Board'):
         st.session_state.board = np.random.randint(2, size=(board_size, board_size))
