@@ -27,9 +27,6 @@ def draw_board(board):
     return board_display
 
 def main():
-    st.title("hey! welcome to the unexpected ai learning world")
-    st.markdown("Dive into a world where each learning step opens doors to new, unforeseen possibilities. Here, your growth isn't just step by step – it's leaps and bounds. Stick around, and let's see where this journey takes us! .")
-
     # Sidebar for configuration
     st.sidebar.title("Configuration")
     board_size = st.sidebar.slider("Board Size", 5, 30, 20)
