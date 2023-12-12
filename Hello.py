@@ -20,9 +20,9 @@ def draw_board(board):
     for i in range(board.shape[0]):
         for j in range(board.shape[1]):
             if board[i, j] == 1:
-                board_display += '⬛'
-            else:
                 board_display += '⬜'
+            else:
+                board_display += '⬛'
         board_display += '\n'
     return board_display
 
