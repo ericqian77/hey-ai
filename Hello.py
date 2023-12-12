@@ -27,6 +27,7 @@ def draw_board(board):
     return board_display
 
 def main():
+
     # Sidebar for configuration
     st.sidebar.title("Configuration")
     board_size = st.sidebar.slider("Board Size", 5, 30, 20)
